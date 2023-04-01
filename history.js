@@ -1,19 +1,19 @@
 //get this data from your firebase account
 var firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: ""
+  apiKey: "AIzaSyD6EePYcsl-wI4irLWpHzKKsE4OJ4ncxj4",
+  authDomain: "tavern-93404.firebaseapp.com",
+  databaseURL: "https://tavern-93404-default-rtdb.firebaseio.com",
+  projectId: "tavern-93404",
+  storageBucket: "tavern-93404.appspot.com",
+  messagingSenderId: "871857106742",
+  appId: "1:871857106742:web:561b8e3831bad926a30d97",
+  measurementId: "G-6CZTR9KH34",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
 var painteddatetransfer = sessionStorage.getItem("paintedDateTransfer");
-var month = sessionStorage.getItem("month"); 
+var month = sessionStorage.getItem("month");
 var day = sessionStorage.getItem("day");
 var year = sessionStorage.getItem("year");
 
@@ -21,15 +21,14 @@ var historyDate = `${month}${day}${year}`;
 
 var totalDisplay = document.getElementById("total_history");
 
-function pageRefresh() {  
-  
+function pageRefresh() {
   document.getElementById("cash_input").focus();
 
   var db = firebase.database();
 
   //Listing Income
   var dbIncome = db.ref("Income");
-  dbIncome.orderByChild("Date").on("child_added", async function(snapshot) {
+  dbIncome.orderByChild("Date").on("child_added", async function (snapshot) {
     var listDate = await snapshot.val().Date;
 
     if (listDate === historyDate) {
@@ -63,16 +62,17 @@ function pageRefresh() {
         await dbIncome.child(key).remove();
 
         var total = db.ref("Total");
-        total.once("value").then(function(snapshot2) {
+        total.once("value").then(function (snapshot2) {
           var oldSum = Number(snapshot2.child(historyDate).val().Sum);
           var newSum = oldSum - subtractAmount;
           total.child(historyDate).set({
-            Sum: newSum
+            Sum: newSum,
           });
           incomeRow.style.visibility = "hidden";
           incomeNoteRow.style.visibility = "hidden";
           deleteButton.style.visibility = "hidden";
-          totalDisplay.innerHTML = "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
+          totalDisplay.innerHTML =
+            "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
           location.reload();
         });
       }
@@ -85,40 +85,42 @@ function pageRefresh() {
         var newNote = window.prompt("Note:", previousNote);
 
         var total = db.ref("Total");
-        total.once("value").then(function(snapshot2) {
+        total.once("value").then(function (snapshot2) {
           var oldSum = Number(snapshot2.child(historyDate).val().Sum);
 
           if (newAmount > previousAmount) {
             var newSum = oldSum + (newAmount - previousAmount);
-          totalDisplay.innerHTML = "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
+            totalDisplay.innerHTML =
+              "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
             total.child(historyDate).set({
-              Sum: newSum
+              Sum: newSum,
             });
             var incomeEdit = db.ref("Income");
-            incomeEdit.once("value").then(function(snapshot3) {
+            incomeEdit.once("value").then(function (snapshot3) {
               incomeEdit.child(key).update({
                 Amount: newAmount,
-                Note: newNote
+                Note: newNote,
               });
             });
           } else if (previousAmount > newAmount) {
             var newSum = oldSum - (previousAmount - newAmount);
-          totalDisplay.innerHTML = "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
+            totalDisplay.innerHTML =
+              "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
             total.child(historyDate).set({
-              Sum: newSum
+              Sum: newSum,
             });
             var incomeEdit = db.ref("Income");
-            incomeEdit.once("value").then(function(snapshot3) {
+            incomeEdit.once("value").then(function (snapshot3) {
               incomeEdit.child(key).update({
                 Amount: newAmount,
-                Note: newNote
+                Note: newNote,
               });
             });
           } else if (previousAmount === newAmount) {
             var incomeEdit = db.ref("Income");
-            incomeEdit.once("value").then(function(snapshot3) {
+            incomeEdit.once("value").then(function (snapshot3) {
               incomeEdit.child(key).update({
-                Note: newNote
+                Note: newNote,
               });
             });
           }
@@ -134,7 +136,7 @@ function pageRefresh() {
   var dbExpenditure = db.ref("Expenditure");
   dbExpenditure
     .orderByChild("Date")
-    .on("child_added", async function(snapshot) {
+    .on("child_added", async function (snapshot) {
       var listDate = await snapshot.val().Date;
 
       if (listDate === historyDate) {
@@ -166,84 +168,96 @@ function pageRefresh() {
           await dbExpenditure.child(key).remove();
 
           var total = db.ref("Total");
-          total.once("value").then(function(snapshot2) {
+          total.once("value").then(function (snapshot2) {
             var oldSum = Number(snapshot2.child(historyDate).val().Sum);
             var newSum = oldSum + addAmount;
             total.child(historyDate).set({
-              Sum: newSum
+              Sum: newSum,
             });
             expenditureRow.style.visibility = "hidden";
             expenditureNoteRow.style.visibility = "hidden";
             deleteButton.style.visibility = "hidden";
-          totalDisplay.innerHTML = "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
+            totalDisplay.innerHTML =
+              "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
             location.reload();
           });
         }
-        
+
         async function editListItem() {
-        var key = snapshot.key;
-        var previousAmount = snapshot.val().Amount;
-        var previousNote = snapshot.val().Note;
-        var newAmount = Number(window.prompt("Amount:", previousAmount));
-        var newNote = window.prompt("Note:", previousNote);
+          var key = snapshot.key;
+          var previousAmount = snapshot.val().Amount;
+          var previousNote = snapshot.val().Note;
+          var newAmount = Number(window.prompt("Amount:", previousAmount));
+          var newNote = window.prompt("Note:", previousNote);
 
-        var total = db.ref("Total");
-        total.once("value").then(function(snapshot2) {
-          var oldSum = Number(snapshot2.child(historyDate).val().Sum);
+          var total = db.ref("Total");
+          total.once("value").then(function (snapshot2) {
+            var oldSum = Number(snapshot2.child(historyDate).val().Sum);
 
-          if (newAmount > previousAmount) {
-            var newSum = oldSum - (newAmount - previousAmount);
-          totalDisplay.innerHTML = "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
-            total.child(historyDate).set({
-              Sum: newSum
-            });
-            var expenditureEdit = db.ref("Expenditure");
-            expenditureEdit.once("value").then(function(snapshot3) {
-              expenditureEdit.child(key).update({
-                Amount: newAmount,
-                Note: newNote
+            if (newAmount > previousAmount) {
+              var newSum = oldSum - (newAmount - previousAmount);
+              totalDisplay.innerHTML =
+                "<p> Total for " +
+                painteddatetransfer +
+                ": $ " +
+                newSum +
+                "</p>";
+              total.child(historyDate).set({
+                Sum: newSum,
               });
-            });
-          } else if (previousAmount > newAmount) {
-            var newSum = oldSum + (previousAmount - newAmount);
-          totalDisplay.innerHTML = "<p> Total for " + painteddatetransfer + ": $ " + newSum + "</p>";
-            total.child(historyDate).set({
-              Sum: newSum
-            });
-            var expenditureEdit = db.ref("Expenditure");
-            expenditureEdit.once("value").then(function(snapshot3) {
-              expenditureEdit.child(key).update({
-                Amount: newAmount,
-                Note: newNote
+              var expenditureEdit = db.ref("Expenditure");
+              expenditureEdit.once("value").then(function (snapshot3) {
+                expenditureEdit.child(key).update({
+                  Amount: newAmount,
+                  Note: newNote,
+                });
               });
-            });
-          } else if (previousAmount === newAmount) {
-            var expenditureEdit = db.ref("Expenditure");
-            expenditureEdit.once("value").then(function(snapshot3) {
-              expenditureEdit.child(key).update({
-                Note: newNote
+            } else if (previousAmount > newAmount) {
+              var newSum = oldSum + (previousAmount - newAmount);
+              totalDisplay.innerHTML =
+                "<p> Total for " +
+                painteddatetransfer +
+                ": $ " +
+                newSum +
+                "</p>";
+              total.child(historyDate).set({
+                Sum: newSum,
               });
-            });
-          }
-          expenditureRow.innerHtml = newAmount;
-          expenditureNoteRow.innerHtml = newNote;
-          location.reload();
-        });
-      }       
+              var expenditureEdit = db.ref("Expenditure");
+              expenditureEdit.once("value").then(function (snapshot3) {
+                expenditureEdit.child(key).update({
+                  Amount: newAmount,
+                  Note: newNote,
+                });
+              });
+            } else if (previousAmount === newAmount) {
+              var expenditureEdit = db.ref("Expenditure");
+              expenditureEdit.once("value").then(function (snapshot3) {
+                expenditureEdit.child(key).update({
+                  Note: newNote,
+                });
+              });
+            }
+            expenditureRow.innerHtml = newAmount;
+            expenditureNoteRow.innerHtml = newNote;
+            location.reload();
+          });
+        }
       }
     });
 
   //Total
   var totalRef = db.ref("Total");
-  totalRef.once("value").then(function(snapshot) {
+  totalRef.once("value").then(function (snapshot) {
     if (snapshot.child(historyDate).val() === null) {
-      totalDisplay.innerHTML = "<p> Total for " + painteddatetransfer + ": $ " + 0 + "</p>";
+      totalDisplay.innerHTML =
+        "<p> Total for " + painteddatetransfer + ": $ " + 0 + "</p>";
     } else {
       var dateTotal = snapshot.child(historyDate).val().Sum;
-      totalDisplay.innerHTML = "<p> Total for " + painteddatetransfer + ": $ " + dateTotal + "</p>";
+      totalDisplay.innerHTML =
+        "<p> Total for " + painteddatetransfer + ": $ " + dateTotal + "</p>";
     }
-  });  
-  
+  });
 }
 
 async function plusSubmission() {
@@ -255,20 +269,20 @@ async function plusSubmission() {
   incomeBranch.push({
     Amount: amount,
     Note: note.value,
-    Date: historyDate
+    Date: historyDate,
   });
 
   var total = db.ref("Total");
-  total.once("value").then(function(snapshot) {
+  total.once("value").then(function (snapshot) {
     if (snapshot.child(historyDate).val() === null) {
       total.child(historyDate).set({
-        Sum: amount
+        Sum: amount,
       });
     } else {
       var oldSum = Number(snapshot.child(historyDate).val().Sum);
       var newSum = oldSum + amount;
       total.child(historyDate).set({
-        Sum: newSum
+        Sum: newSum,
       });
       totalDisplay.innerHTML = "<p>$ " + newSum + "</p>";
     }
@@ -286,20 +300,20 @@ function minusSubmission() {
   expenditureBranch.push({
     Amount: amount,
     Note: note.value,
-    Date: historyDate
+    Date: historyDate,
   });
 
   var total = db.ref("Total");
-  total.once("value").then(function(snapshot) {
+  total.once("value").then(function (snapshot) {
     if (snapshot.child(historyDate).val() === null) {
       total.child(historyDate).set({
-        Sum: -amount
+        Sum: -amount,
       });
     } else {
       var oldSum = Number(snapshot.child(historyDate).val().Sum);
       var newSum = oldSum - amount;
       total.child(historyDate).set({
-        Sum: newSum
+        Sum: newSum,
       });
       totalDisplay.innerHTML = "<p>$ " + newSum + "</p>";
     }

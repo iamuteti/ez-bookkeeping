@@ -1,13 +1,13 @@
 //get this data from your firebase account
 var firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: ""
+  apiKey: "AIzaSyD6EePYcsl-wI4irLWpHzKKsE4OJ4ncxj4",
+  authDomain: "tavern-93404.firebaseapp.com",
+  databaseURL: "https://tavern-93404-default-rtdb.firebaseio.com",
+  projectId: "tavern-93404",
+  storageBucket: "tavern-93404.appspot.com",
+  messagingSenderId: "871857106742",
+  appId: "1:871857106742:web:561b8e3831bad926a30d97",
+  measurementId: "G-6CZTR9KH34",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -28,7 +28,7 @@ function pageRefresh() {
 
   //Listing Owed
   var dbOwed = db.ref("Owed");
-  dbOwed.orderByChild("Date").on("child_added", async function(snapshot) {
+  dbOwed.orderByChild("Date").on("child_added", async function (snapshot) {
     var isTrue = snapshot.val().Paid;
 
     if (!isTrue) {
@@ -68,11 +68,11 @@ function pageRefresh() {
         await dbOwed.child(key).remove();
 
         var totalOwed = db.ref("TotalOwed");
-        totalOwed.once("value").then(function(snapshot2) {
+        totalOwed.once("value").then(function (snapshot2) {
           var oldSum = Number(snapshot2.val().Sum);
           var newSum = oldSum - subtractAmount;
           totalOwed.set({
-            Sum: newSum
+            Sum: newSum,
           });
           owedRow.style.visibility = "hidden";
           owedNoteRow.style.visibility = "hidden";
@@ -93,40 +93,40 @@ function pageRefresh() {
         var newNote = window.prompt("Note:", previousNote);
 
         var totalOwed = db.ref("TotalOwed");
-        totalOwed.once("value").then(function(snapshot2) {
+        totalOwed.once("value").then(function (snapshot2) {
           var oldSum = Number(snapshot2.val().Sum);
 
           if (newAmount > previousAmount) {
             var newSum = oldSum + (newAmount - previousAmount);
             totalDisplay.innerHTML = "<p>" + newSum + "</p>";
             totalOwed.set({
-              Sum: newSum
+              Sum: newSum,
             });
             var owedEdit = db.ref("Owed");
-            owedEdit.once("value").then(function(snapshot3) {
+            owedEdit.once("value").then(function (snapshot3) {
               owedEdit.child(key).update({
                 Amount: newAmount,
-                Note: newNote
+                Note: newNote,
               });
             });
           } else if (previousAmount > newAmount) {
             var newSum = oldSum - (previousAmount - newAmount);
             totalDisplay.innerHTML = "<p>" + newSum + "</p>";
             totalOwed.set({
-              Sum: newSum
+              Sum: newSum,
             });
             var owedEdit = db.ref("Owed");
-            owedEdit.once("value").then(function(snapshot3) {
+            owedEdit.once("value").then(function (snapshot3) {
               owedEdit.child(key).update({
                 Amount: newAmount,
-                Note: newNote
+                Note: newNote,
               });
             });
           } else if (previousAmount === newAmount) {
             var owedEdit = db.ref("Owed");
-            owedEdit.once("value").then(function(snapshot3) {
+            owedEdit.once("value").then(function (snapshot3) {
               owedEdit.child(key).update({
-                Note: newNote
+                Note: newNote,
               });
             });
           }
@@ -142,16 +142,16 @@ function pageRefresh() {
         var subtractAmount = Number(snapshot.val().Amount);
 
         var totalOwed = db.ref("TotalOwed");
-        totalOwed.once("value").then(function(snapshot2) {
+        totalOwed.once("value").then(function (snapshot2) {
           var oldSum = Number(snapshot2.val().Sum);
           var newSum = oldSum - subtractAmount;
           totalOwed.set({
-            Sum: newSum
+            Sum: newSum,
           });
           var owedPaidTrue = db.ref("Owed");
-          owedPaidTrue.once("value").then(function(snapshot3) {
+          owedPaidTrue.once("value").then(function (snapshot3) {
             owedPaidTrue.child(key).update({
-              Paid: true
+              Paid: true,
             });
           });
           owedRow.style.visibility = "hidden";
@@ -165,11 +165,11 @@ function pageRefresh() {
         });
 
         var totalPaid = db.ref("TotalPaid");
-        totalPaid.once("value").then(function(snapshot4) {          
+        totalPaid.once("value").then(function (snapshot4) {
           console.log(amount);
           if (snapshot4.val() === null) {
             totalPaid.set({
-              Sum: amount
+              Sum: amount,
             });
           } else {
             var oldSum = Number(snapshot4.val().Sum);
@@ -177,7 +177,7 @@ function pageRefresh() {
             console.log(oldSum);
             console.log(newSum);
             totalPaid.set({
-              Sum: newSum
+              Sum: newSum,
             });
           }
         });
@@ -187,7 +187,7 @@ function pageRefresh() {
 
   //Total
   var totalRef = db.ref("TotalOwed");
-  totalRef.once("value").then(function(snapshot) {
+  totalRef.once("value").then(function (snapshot) {
     if (snapshot.val() === null) {
       totalDisplay.innerHTML = "<p> 0 </p>";
     } else {
@@ -207,20 +207,20 @@ async function owedSubmission() {
     Amount: amount,
     Note: note.value,
     Date: todayDate,
-    Paid: false
+    Paid: false,
   });
 
   var totalOwed = db.ref("TotalOwed");
-  totalOwed.once("value").then(function(snapshot) {
+  totalOwed.once("value").then(function (snapshot) {
     if (snapshot.val() === null) {
       totalOwed.set({
-        Sum: amount
+        Sum: amount,
       });
     } else {
       var oldSum = Number(snapshot.val().Sum);
       var newSum = oldSum + amount;
       totalOwed.set({
-        Sum: newSum
+        Sum: newSum,
       });
       totalDisplay.innerHTML = "<p>" + newSum + "</p>";
     }

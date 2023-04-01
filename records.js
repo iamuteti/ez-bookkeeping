@@ -1,16 +1,17 @@
 //get this data from your firebase account
 var firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: ""
+  apiKey: "AIzaSyD6EePYcsl-wI4irLWpHzKKsE4OJ4ncxj4",
+  authDomain: "tavern-93404.firebaseapp.com",
+  databaseURL: "https://tavern-93404-default-rtdb.firebaseio.com",
+  projectId: "tavern-93404",
+  storageBucket: "tavern-93404.appspot.com",
+  messagingSenderId: "871857106742",
+  appId: "1:871857106742:web:561b8e3831bad926a30d97",
+  measurementId: "G-6CZTR9KH34",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+console.log("Firebase: ", firebase);
 var db = firebase.database();
 
 var today = new Date();
@@ -33,14 +34,14 @@ let longMonths = [
   "September",
   "October",
   "November",
-  "December"
+  "December",
 ];
 
 var recordList = document.getElementById("records_list");
 
 function pageRefresh() {
   var total = db.ref("Total");
-  total.once("value").then(async function(snapshot) {
+  total.once("value").then(async function (snapshot) {
     yearLoop: for (let i = year - 1; i < year + 1; i++) {
       monthLoop: for (let j = 0; j < longMonths.length; j++) {
         dayLoop: for (let k = 1; k < 32; k++) {
@@ -90,5 +91,3 @@ function pageRefresh() {
     }
   });
 }
-
-

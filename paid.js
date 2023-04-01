@@ -1,13 +1,13 @@
 //get this data from your firebase account
 var firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: ""
+  apiKey: "AIzaSyD6EePYcsl-wI4irLWpHzKKsE4OJ4ncxj4",
+  authDomain: "tavern-93404.firebaseapp.com",
+  databaseURL: "https://tavern-93404-default-rtdb.firebaseio.com",
+  projectId: "tavern-93404",
+  storageBucket: "tavern-93404.appspot.com",
+  messagingSenderId: "871857106742",
+  appId: "1:871857106742:web:561b8e3831bad926a30d97",
+  measurementId: "G-6CZTR9KH34",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -15,12 +15,11 @@ firebase.initializeApp(firebaseConfig);
 var totalDisplay = document.getElementById("paid_total");
 
 function pageRefresh() {
-
   var db = firebase.database();
 
   //Listing Paid
   var dbOwed = db.ref("Owed");
-  dbOwed.orderByChild("Date").on("child_added", async function(snapshot) {
+  dbOwed.orderByChild("Date").on("child_added", async function (snapshot) {
     var isTrue = snapshot.val().Paid;
     if (isTrue) {
       var paidList = document.getElementById("paid_list");
@@ -46,89 +45,47 @@ function pageRefresh() {
       paidList.appendChild(undoPaidButton);
 
       async function undoPaid() {
-        
-        
-        
-        
-        
-        
-        
-        
-        
         var key = snapshot.key;
         var amount = snapshot.val().Amount;
         var subtractAmount = Number(snapshot.val().Amount);
-        
-         var totalPaid = db.ref("TotalPaid");
-        totalPaid.once("value").then(function(snapshot2) {          
-            var oldSum = Number(snapshot2.val().Sum);
-            var newSum = oldSum - subtractAmount;
-            console.log(oldSum);
-            console.log(newSum);
-            totalPaid.set({
-              Sum: newSum
-            });
+
+        var totalPaid = db.ref("TotalPaid");
+        totalPaid.once("value").then(function (snapshot2) {
+          var oldSum = Number(snapshot2.val().Sum);
+          var newSum = oldSum - subtractAmount;
+          console.log(oldSum);
+          console.log(newSum);
+          totalPaid.set({
+            Sum: newSum,
+          });
           var owedUpdate = db.ref("Owed");
           owedUpdate.child(key).update({
-              Paid: false
-            });         
+            Paid: false,
+          });
           paidRow.style.visibility = "hidden";
           paidNoteRow.style.visibility = "hidden";
-          paidDateRow.style.visibility = "hidden";          
+          paidDateRow.style.visibility = "hidden";
           undoPaidButton.style.visibility = "hidden";
           totalDisplay.innerHTML = "<p>" + newSum + "</p>";
           location.reload();
-        });     
+        });
 
         var totalOwed = db.ref("TotalOwed");
-        totalOwed.once("value").then(function(snapshot3) {
+        totalOwed.once("value").then(function (snapshot3) {
           var oldSum = Number(snapshot3.val().Sum);
           var newSum = oldSum + subtractAmount;
           totalOwed.set({
-            Sum: newSum
-          });     
-        });        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+            Sum: newSum,
+          });
+        });
       }
     }
   });
 
   var totalPaid = db.ref("TotalPaid");
-  totalPaid.once("value").then(function(snapshot) {
+  totalPaid.once("value").then(function (snapshot) {
     var totalPaidDisplay = snapshot.val().Sum;
     console.log(totalPaidDisplay);
-    totalDisplay.innerHTML = "<p>" + totalPaidDisplay + "</p>";    
+    totalDisplay.innerHTML = "<p>" + totalPaidDisplay + "</p>";
   });
 }
